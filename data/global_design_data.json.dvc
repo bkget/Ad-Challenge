@@ -1,0 +1,4 @@
+outs:
+- md5: 59c22fc8216c3fbab793e276eb263ab8
+  size: 4000877
+  path: global_design_data.json
