@@ -7,7 +7,7 @@
         width, 
         height, 
         browser_ts, 
-        game_key, 
+        game_key_ci,
         geo_country, 
         site_name, 
         platform_os, 
