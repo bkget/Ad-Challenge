@@ -1,0 +1,12 @@
+postgres_2:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: postgres
+      user: airflow
+      pass: airflow
+      port: 5432
+      dbname: ad_lake
+      schema: public
+      threads: 4
