@@ -99,6 +99,7 @@ Biruk Getaneh - bkgetmom@gmail.com
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgment
 -   [Adludio](https://www.adludio.com/)
+-   [10 Academy](https://www.10academy.org/)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [contributors-shield]: https://img.shields.io/github/contributors/bkget/Ad-Challenge.svg?style=for-the-badge
