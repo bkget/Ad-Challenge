@@ -81,8 +81,7 @@ Make sure you have docker installed on local machine.
 5. Open Airflow web browser
     ```JS
     Navigate to `http://localhost:8080/` on the browser
-    activate and trigger load_dag
-    activate and trigger dbt_dag 
+    activate and trigger ETL_dag
 
 <!-- CONTRIBUTING -->
 ## Contributing
