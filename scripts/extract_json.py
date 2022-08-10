@@ -181,7 +181,7 @@ class JsonDataExtractor:
 
         try:
             # Execute the data engestion to the database
-            global_design_df.to_sql('briefing_data', engine)
+            global_design_df.to_sql('briefing', engine)
             print("Data Inserted to the Database Successfully!")
 
         except Exception as e: 
