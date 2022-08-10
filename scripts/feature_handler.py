@@ -38,4 +38,16 @@ class FeatureHandler:
         
         return self.df
 
-    
+    def features_correlation(self, X, Y):
+        corr_df = pd.DataFrame(X.corrwith(Y)).sort_values(by=0, ascending=False)
+        corr_df.rename({0: "ER"}, axis=1)
+        corr = corr_df.T
+        mask = np.zeros_like(corr, dtype=bool)
+        mask[np.triu_indices_from(mask)] = True
+        cmap = sns.diverging_palette(230, 20, as_cmap=True)
+        fig, ax = plt.subplots(figsize=(18, 15))
+        heatmap = sns.heatmap(corr, square=True, linewidths=.5,
+                            vmin=-1, vmax=1, cmap='viridis', annot=True, fmt='.1f')
+        heatmap.set_title('Correlation Between Features',
+        fontdict={'fontsize': 16}, pad=12)
+        
