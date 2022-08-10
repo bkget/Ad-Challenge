@@ -8,7 +8,7 @@
  
  <p align="right"> 
     <br />
-    <a href="https://ad-doc.netlify.app"><strong>»Explore dbt docs« </strong></a>
+    <a href="https://ad-doc.netlify.app" target="_blank"><strong>»Explore dbt docs« </strong></a>
     <br />  
   </p>
 
