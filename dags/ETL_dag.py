@@ -1,5 +1,4 @@
 # Importing the necessary modules
-from itertools import chain
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.operators.python_operator import PythonOperator
@@ -8,24 +7,17 @@ from airflow.operators.dummy import DummyOperator
 from airflow.models.baseoperator import chain
 
 from datetime import datetime as dt
+from sqlalchemy import Numeric
 from datetime import timedelta
+from sqlalchemy import Text
 from airflow import DAG 
 import pandas as pd
-from sqlalchemy import Numeric
-from sqlalchemy import Text
 
-# Specifing the default_args
-default_args = {
-    'owner': 'biruk',
-    'depends_on_past': False,
-    # 'email': ['bkgetmom@gmail.com'],
-    # 'email_on_failure': True,
-    # 'email_on_retry': True,
-    'retries': 1,
-    'start_date': dt(2022, 7, 18),
-    'retry_delay': timedelta(minutes=5)
-}
-  
+
+####################################################
+#          Read data from the source               #
+####################################################
+#   
 def read_briefing_data():
     data_df = pd.read_csv('/opt/airflow/data/briefing.csv')
     return data_df
@@ -38,7 +30,10 @@ def read_global_design_data_data():
     data_df = pd.read_csv('/opt/airflow/data/global_design_data.csv')
     return data_df
 
-# Inserting the data into the our postgres table
+####################################################
+#    Inserting the data to the postgres table      #
+####################################################
+
 def insert_briefing_data(): 
     pg_hook = PostgresHook(
     postgres_conn_id="pg_conn")
@@ -128,6 +123,18 @@ def insert_global_design_data():
 #          Airflow DAG configurations              #
 ####################################################
 
+# Specifing the default_args
+default_args = {
+    'owner': 'biruk',
+    'depends_on_past': False,
+    'email': ['bkgetmom@gmail.com'],
+    'email_on_failure': True,
+    'email_on_retry': True,
+    'retries': 1,
+    'start_date': dt(2022, 7, 18),
+    'retry_delay': timedelta(minutes=5)
+}
+
 with DAG(
     dag_id='ELT_DAG',
     default_args=default_args,
@@ -184,7 +191,7 @@ with DAG(
 
  dbt_test = BashOperator(
     task_id="dbt_test",
-    bash_command=f"dbt test --profiles-dir /opt/airflow/dbt --project-dir /opt/airflow/dbt",
+    bash_command=f"dbt test --profiles-dir {DBT_PROJECT_DIR} --project-dir {DBT_PROJECT_DIR}",
  )
 
 #  dbt_doc_generate = BashOperator(
@@ -193,9 +200,9 @@ with DAG(
 #                     "/opt/airflow/dbt"
 #  )
 
-    ####################################################
-    #          Task dependencies                       #
-    ####################################################
 
+####################################################
+#          Task dependencies                       #
+####################################################
 
 chain(start, [campaigns_inventory_table_creator, briefing_table_creator, global_design_table_creator], [campaigns_inventory_data_loader, briefing_data_loader, global_design_data_loader], dbt_run, dbt_test, end)
