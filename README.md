@@ -6,6 +6,11 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
  
+ <p align="right"> 
+    <br />
+    <a href="https://ad-doc.netlify.app" target="_blank"><strong>»Explore dbt docs« </strong></a>
+    <br />  
+  </p>
 
 <div id="top"></div>
 <!-- TABLE OF CONTENTS -->
@@ -34,12 +39,9 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-<!-- ![alt text](https://github.com/bkget/Ad-Challenge/blob/main/screenshots/migration_architecture.png?raw=true) -->
-In this repo, I have given the data that was registered at different steps of the creative creation and ad
-placement process. In principle, the process should have used an identifier to link all the data sources
-coming from the different steps. Unfortunately, that was not done, so the data linking is done by using the
-metadata registered at each step of the process.
-The basic tasks done in the process includes the following.
+![alt text](https://github.com/bkget/Ad-Challenge/blob/airflow/screenshots/dag_.png?raw=true)
+In this repo, I used the data that was registered at different steps of the creative creation and ad placement process to perform a data engineering process and a machine learning prediction. In principle, the process should have used an identifier to link all the data sources coming from the different steps. Unfortunately, that was not done, so the data linking is done by using the metadata registered at each step of the process. After ingesting the data into a data lake, I have modeled and merged the data to a single unit in the data warehouse and expose the the interface for the machine learning task.
+The basic tasks done in the process are the following:
 * Task 1: Data engineering task to link the data from different sources
 * Task 2: Machine learning model to forecast creative performance
 
@@ -102,6 +104,7 @@ Biruk Getaneh - bkgetmom@gmail.com
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgment
 -   [Adludio](https://www.adludio.com/)
+-   [10 Academy](https://www.10academy.org/)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [contributors-shield]: https://img.shields.io/github/contributors/bkget/Ad-Challenge.svg?style=for-the-badge
