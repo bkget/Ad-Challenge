@@ -10,13 +10,13 @@ class FeatureHandler:
         print('Feature handler initialized...')
 
     def compute_kpi(self):
-        """ Compute the KPI of the corresponding campaign_id's by calculating Engagement 
+        """ Compute the KPI of the corresponding campaign_id by calculating Engagement 
             and Click Through Rate
         """
 
         self.df = self.df.groupby(['campaign_id','type'])['type'].agg(count='count').reset_index()
         campaign_info = []
-        er = 0; ctr= 0
+        er = 0; ctr = 0
         campaigns = list(self.df['campaign_id'].unique())
         for campaign in campaigns: 
             types = list(self.df[self.df['campaign_id'] == campaign]['type']) 
@@ -24,13 +24,13 @@ class FeatureHandler:
             if 'impression' in types:
                 total_impression = list(self.df.query(f" campaign_id == '{campaign}' and type == 'impression'")['count'])[0]
                 
-                if 'first_dropped' in types:
-                    first_dropped_count = list(self.df.query(f" campaign_id == '{campaign}' and type == 'first_dropped'")['count'])[0]
-                    er = (first_dropped_count/total_impression) * 100
+            if 'first_dropped' in types:
+                first_dropped_count = list(self.df.query(f" campaign_id == '{campaign}' and type == 'first_dropped'")['count'])[0]
+                er = (first_dropped_count/total_impression) * 100
 
-                if 'click-through-event' in types:
-                    click_through_event_count = list(self.df.query(f" campaign_id == '{campaign}' and type == 'click-through-event'")['count'])[0]
-                    ctr = (click_through_event_count/total_impression) * 100 
+            if 'click-through-event' in types:
+                click_through_event_count = list(self.df.query(f" campaign_id == '{campaign}' and type == 'click-through-event'")['count'])[0]
+                ctr = (click_through_event_count/total_impression) * 100 
 
             campaign_info.append([campaign, er, ctr])
 
@@ -48,6 +48,6 @@ class FeatureHandler:
         fig, ax = plt.subplots(figsize=(18, 15))
         heatmap = sns.heatmap(corr, square=True, linewidths=.5,
                             vmin=-1, vmax=1, cmap='viridis', annot=True, fmt='.1f')
-        heatmap.set_title('Correlation Between Features',
+        heatmap.set_title('Correlation Between Features and the target - `ER`',
         fontdict={'fontsize': 16}, pad=12)
         
