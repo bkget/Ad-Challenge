@@ -47,24 +47,24 @@ def insert_briefing_data():
         dtype={
             "campaign_id_br": Text(), 
             "campaign_name": Text(), 
-            "Submission Date": Text(), 
-            "Description": Text(), 
-            "Campaign Objectives": Text(), 
+            "submission_date": Text(), 
+            "description": Text(), 
+            "campaign_objectives": Text(), 
             "KPIs": Text(), 
-            "Placement(s)": Text(), 
-            "StartDate": Text(), 
-            "EndDate": Text(), 
-            "Serving Location(s)": Text(), 
-            "Black/white/audience list included?": Text(), 
-            "Delivery Requirements (Black/Audience/White List)": Text(),
-            "Cost Centre": Text(), 
-            "Currency": Text(), 
-            "Buy Rate (CPE)": Numeric(), 
-            "Volume Agreed": Numeric(), 
-            "Gross Cost/Budget": Numeric(), 
-            "Agency Fee": Text(), 
-            "Percentage": Numeric(), 
-            "Net Cost": Numeric()
+            "placement(s)": Text(), 
+            "start_date": Text(), 
+            "end_date": Text(), 
+            "serving_location(s)": Text(), 
+            "black/white/audience_list_included?": Text(), 
+            "delivery_requirements_(black/audience/white_list)": Text(),
+            "cost_centre": Text(), 
+            "currency": Text(), 
+            "buy_rate_(CPE)": Numeric(), 
+            "volume_agreed": Numeric(), 
+            "gross_cost/budget": Numeric(), 
+            "agency_fee": Text(), 
+            "percentage": Numeric(), 
+            "net_cost": Numeric()
             },
     )
 
@@ -194,15 +194,15 @@ with DAG(
     bash_command=f"dbt test --profiles-dir {DBT_PROJECT_DIR} --project-dir {DBT_PROJECT_DIR}",
  )
 
-#  dbt_doc_generate = BashOperator(
-#     task_id="dbt_doc_generate", 
-#     bash_command="dbt docs generate --profiles-dir /opt/airflow/dbt --project-dir "
-#                     "/opt/airflow/dbt"
-#  )
+ dbt_doc_generate = BashOperator(
+    task_id="dbt_doc_generate", 
+    bash_command="dbt docs generate --profiles-dir /opt/airflow/dbt --project-dir "
+                    "/opt/airflow/dbt"
+ )
 
 
 ####################################################
 #          Task dependencies                       #
 ####################################################
 
-chain(start, [campaigns_inventory_table_creator, briefing_table_creator, global_design_table_creator], [campaigns_inventory_data_loader, briefing_data_loader, global_design_data_loader], dbt_run, dbt_test, end)
+chain(start, [campaigns_inventory_table_creator, briefing_table_creator, global_design_table_creator], [campaigns_inventory_data_loader, briefing_data_loader, global_design_data_loader], dbt_run, dbt_test, dbt_doc_generate, end)
