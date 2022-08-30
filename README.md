@@ -1,4 +1,4 @@
-# Adludio Data Science Challenge 
+# Advertisement Data Analysis
 <!-- PROJECT SHIELDS -->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
