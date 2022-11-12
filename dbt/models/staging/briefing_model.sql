@@ -3,6 +3,6 @@
    SELECT     
    
         *
-       
+
    FROM  
         briefing
