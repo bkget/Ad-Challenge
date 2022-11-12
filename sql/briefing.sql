@@ -22,7 +22,7 @@ CREATE TABLE briefing (
     agency_fee text COLLATE pg_catalog."default",
     percentage double precision,
     flat_fee double precision,
-    net_cost double precision,
+    net_cost double precision
     -- CONSTRAINT briefing_pkey PRIMARY KEY (campaign_id_br)
 );
 

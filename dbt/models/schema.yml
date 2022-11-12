@@ -25,7 +25,7 @@ models:
         description: "A unique identifier of a campaign."
         tests:
           - not_null
-          - unique
+          # - unique
 
   - name: full_ad_data
     description: "A joined Ads data table that contains campaigns_inventory, briefing, and global_design tables data"
