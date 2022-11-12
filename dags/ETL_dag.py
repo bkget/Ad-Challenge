@@ -26,7 +26,7 @@ def read_campaigns_inventory_data():
     data_df = pd.read_csv('/opt/airflow/data/campaigns_inventory_updated.csv')
     return data_df
 
-def read_global_design_data_data():
+def read_global_design_data():
     data_df = pd.read_csv('/opt/airflow/data/global_design_data.csv')
     return data_df
 
@@ -36,7 +36,7 @@ def read_global_design_data_data():
 
 def insert_briefing_data(): 
     pg_hook = PostgresHook(
-    postgres_conn_id="pg_conn")
+    postgres_conn_id="pg_con")
     conn = pg_hook.get_sqlalchemy_engine()
     data_df = read_briefing_data()
 
@@ -70,7 +70,7 @@ def insert_briefing_data():
 
 def insert_campaigns_inventory_data(): 
     pg_hook = PostgresHook(
-    postgres_conn_id="pg_conn")
+    postgres_conn_id="pg_con")
     conn = pg_hook.get_sqlalchemy_engine()
     data_df = read_campaigns_inventory_data()
 
@@ -91,15 +91,14 @@ def insert_campaigns_inventory_data():
             "platform_os": Text(), 
             "device_type": Text(), 
             "browser": Text() 
-
         },
     )
 
 def insert_global_design_data(): 
     pg_hook = PostgresHook(
-    postgres_conn_id="pg_conn")
+    postgres_conn_id="pg_con")
     conn = pg_hook.get_sqlalchemy_engine()
-    data_df = read_global_design_data_data()
+    data_df = read_global_design_data()
 
     data_df.to_sql("global_design",
         con=conn,
@@ -127,9 +126,9 @@ def insert_global_design_data():
 default_args = {
     'owner': 'biruk',
     'depends_on_past': False,
-    'email': ['bkgetmom@gmail.com'],
-    'email_on_failure': True,
-    'email_on_retry': True,
+    # 'email': ['bkgetmom@gmail.com'],
+    # 'email_on_failure': True,
+    # 'email_on_retry': True,
     'retries': 1,
     'start_date': dt(2022, 7, 18),
     'retry_delay': timedelta(minutes=5)
@@ -148,7 +147,7 @@ with DAG(
 
  briefing_table_creator = PostgresOperator(
     task_id="create_briefing_table", 
-    postgres_conn_id="pg_conn",
+    postgres_conn_id="pg_con",
     sql = 'sql/briefing_schema.sql'
     )
 
@@ -159,7 +158,7 @@ with DAG(
 
  campaigns_inventory_table_creator = PostgresOperator(
     task_id="create_campaigns_inventory_table", 
-    postgres_conn_id="pg_conn",
+    postgres_conn_id="pg_con",
     sql = 'sql/campaigns_inventory_schema.sql'
     )
 
@@ -170,7 +169,7 @@ with DAG(
 
  global_design_table_creator = PostgresOperator(
     task_id="create_global_design_table", 
-    postgres_conn_id="pg_conn",
+    postgres_conn_id="pg_con",
     sql = 'sql/briefing_schema.sql'
     )
 
