@@ -21,7 +21,7 @@ models:
   - name: stg_briefing
     description: "This table holds campaign & creative plan data."
     columns:
-      - name: campaign_id_br
+      - name: campaign_id
         description: "A unique identifier of a campaign."
         tests:
           - not_null
