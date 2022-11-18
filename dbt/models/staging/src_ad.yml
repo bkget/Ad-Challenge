@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: ad_lake
+    schema: public
+    tables:
+      - name: briefing
+      - name: campaigns_inventory
+      - name: global_design

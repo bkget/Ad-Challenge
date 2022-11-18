@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: campaign_inventory_model
+  - name: stg_campaigns_inventory
     description: "This table holds a a campaign historical performance dataset."
     columns:
       - name: type
@@ -9,7 +9,7 @@ models:
         tests: 
           - not_null
 
-  - name: global_design_model
+  - name: stg_global_design
     description: "This table holds data analyzed from advertisements using computer vision."
     columns:
       - name: game_key
@@ -18,7 +18,7 @@ models:
           - unique
           - not_null
 
-  - name: briefing_model
+  - name: stg_briefing
     description: "This table holds campaign & creative plan data."
     columns:
       - name: campaign_id_br
@@ -26,14 +26,6 @@ models:
         tests:
           - not_null
           # - unique
-
-  - name: full_ad_data
-    description: "A joined Ads data table that contains campaigns_inventory, briefing, and global_design tables data"
-    columns:
-      - name: campaign_id
-        description: "A unique identifier of a campaign"
-        tests:
-
   
 
   
