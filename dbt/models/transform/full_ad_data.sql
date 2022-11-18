@@ -1,6 +1,4 @@
-{{ config(materialized='table') }} 
-    
-SELECT 
+ SELECT 
     ci.campaign_id, 
     ci.creative_id, 
     ci.auction_id, 
@@ -8,32 +6,31 @@ SELECT
     ci.width, 
     ci.height, 
     ci.browser_ts, 
-    ci.game_key_ci AS game_key, 
+    ci.game_key, 
     ci.geo_country, 
     ci.site_name, 
     ci.platform_os, 
     ci.device_type, 
     ci.browser,
     br.campaign_name, 
-    br.submission_date, 
-    br.description, 
-    br.campaign_objectives, 
+    br."Submission Date" AS submission_date, 
+    br."Description", 
+    br."Campaign Objectives" AS campaign_objectives, 
     br."KPIs", 
-    br."placement(s)", 
-    br.start_date, 
-    br.end_date, 
-    br."serving_location(s)", 
-    br."black/white/audience_list_included?" AS black_white_audience_list_included, 
-    br."delivery_requirements_(black/audience/white_list)" AS delivery_requirements, 
-    br.cost_centre, 
-    br.currency, 
-    br."buy_rate_(CPE)", 
-    br.volume_agreed, 
-    br."gross_cost/budget", 
-    br.agency_fee, 
-    br.percentage, 
-    br.flat_fee, 
-    br.net_cost,  
+    br."Placement(s)" AS "placement(s)", 
+    br."StartDate" AS "start_date", 
+    br."EndDate" AS "end_date", 
+    br."Serving Location(s)" AS "serving_location(s)", 
+    br."Black/white/audience list included?" AS black_white_audience_list_included, 
+    br."Delivery Requirements (Black/Audience/White List)" AS delivery_requirements, 
+    br."Cost Centre" AS "cost_centre", 
+    br."Currency",
+    br."Buy Rate (CPE)" AS "buy_rate_(CPE)", 
+    br."Volume Agreed" AS volume_agreed, 
+    br."Gross Cost/Budget" AS "gross_cost/budget", 
+    br."Agency Fee" AS agency_fee, 
+    br."Percentage", 
+    br."Net Cost" AS net_cost,  
     gd.labels_engagement, 
     gd.labels_click_through, 
     gd.text_engagement, 
@@ -43,17 +40,17 @@ SELECT
        
 FROM 
         
-    {{ ref('campaign_inventory_model') }} ci
+    {{ ref('stg_campaigns_inventory') }} ci
 
 LEFT JOIN 
 
-    {{ ref('briefing_model') }} br
+    {{ ref('stg_briefing') }} br
 
 ON     
     ci.campaign_id = br.campaign_id_br
 
 LEFT JOIN 
 
-    {{ ref('global_design_model') }} gd
+    {{ ref('stg_global_design') }} gd
 ON     
-    ci.game_key_ci = gd.game_key
+    ci.game_key = gd.game_key
