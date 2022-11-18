@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: stg_campaigns_inventory
+    description: "This table holds a a campaign historical performance dataset."
+    columns:
+      - name: type
+        description: "Engagement types"
+        tests: 
+          - not_null
+
+  - name: stg_global_design
+    description: "This table holds data analyzed from advertisements using computer vision."
+    columns:
+      - name: game_key
+        description: "A unique identifier that identifies a particular creative."
+        test:
+          - unique
+          - not_null
+
+  - name: stg_briefing
+    description: "This table holds campaign & creative plan data."
+    columns:
+      - name: campaign_id_br
+        description: "A unique identifier of a campaign."
+        tests:
+          - not_null
+          # - unique
+  
+
+  

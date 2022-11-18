@@ -1,0 +1,14 @@
+version: 2
+
+models: 
+  - name: full_ad_data
+    description: "A joined Ads data table that contains campaigns_inventory, briefing, and global_design tables data"
+    columns:
+      - name: campaign_id
+        description: "A unique identifier of a campaign"
+        tests:
+          - not_null 
+
+  
+
+  

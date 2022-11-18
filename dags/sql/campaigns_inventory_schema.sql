@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS public.campaigns_inventory
     creative_id character varying(300) COLLATE pg_catalog."default",
     auction_id character varying(300) COLLATE pg_catalog."default",
     browser_ts character varying(300) COLLATE pg_catalog."default",
-    game_key character varying(300) COLLATE pg_catalog."default",
+    game_key_ci character varying(300) COLLATE pg_catalog."default",
     geo_country text COLLATE pg_catalog."default",
     site_name text COLLATE pg_catalog."default",
     platform_os character varying(300) COLLATE pg_catalog."default",
