@@ -8,8 +8,8 @@ from sqlalchemy import func
 from typing import List, Dict, Any
 from datetime import datetime
 
-from src.db.session import get_db, engine, Base
-from src.db.models import Campaign, Creative, CreativeMetric, ModelBenchmark, FeatureImportance
+from src.db.session import get_db, engine
+from src.db.analytics_models import Campaign, Creative, CreativeMetric, ModelBenchmark, FeatureImportance
 
 app = FastAPI(title="Ad-Challenge API")
 
