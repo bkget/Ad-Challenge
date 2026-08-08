@@ -50,52 +50,86 @@ def load_config(config_path: str = "configs/default.yaml") -> dict:
     return config
 
 
-def stage_ingestion(config: dict) -> tuple:
-    """Stage 1: Load all raw data sources."""
+def stage_ingestion(config: dict, source: str = "db") -> tuple:
+    """Stage 1: Load all raw data sources.
+
+    Parameters
+    ----------
+    source : str
+        'db'   — read from analytics/staging schemas (Pattern B, default)
+        'file' — read from raw CSV/JSON files (legacy Pattern A)
+    """
     logger.info("\n" + "-" * 50)
     logger.info("STAGE 1: DATA INGESTION & ENTITY RESOLUTION")
+    logger.info(f"  Source: {source.upper()}")
     logger.info("-" * 50)
 
-    from src.ingestion.loader import run_ingestion
-    from src.ingestion.entity_resolution import (
-        flatten_global_design,
-        build_creative_kpi_table,
-        build_linked_dataset,
-    )
-
     t0 = time.time()
-    briefing_df, inventory_df, design_dict, image_features, images_df = run_ingestion(config)
-    logger.info(f"  Raw data loaded in {time.time()-t0:.1f}s")
 
-    t0 = time.time()
-    design_flat_df = flatten_global_design(design_dict)
-    logger.info(f"  Design data flattened in {time.time()-t0:.1f}s")
+    if source == "db":
+        # ── Pattern B: read from analytics + staging schemas ──────────────
+        from src.ingestion.db_reader import (
+            read_linked_dataset_from_db,
+            read_images_registry_from_db,
+        )
+        linked_df = read_linked_dataset_from_db()
+        images_df = read_images_registry_from_db()
+        logger.info(f"  DB ingestion completed in {time.time()-t0:.1f}s")
+        return linked_df, images_df
 
-    t0 = time.time()
-    kpi_df = build_creative_kpi_table(
-        inventory_df,
-        min_impressions=config["features"]["min_impressions"],
-    )
-    logger.info(f"  KPI table built in {time.time()-t0:.1f}s")
+    else:
+        # ── Pattern A: legacy file-based ingestion (fallback) ─────────────
+        from src.ingestion.loader import run_ingestion
+        from src.ingestion.entity_resolution import (
+            flatten_global_design,
+            build_creative_kpi_table,
+            build_linked_dataset,
+        )
 
-    linked_df = build_linked_dataset(kpi_df, design_flat_df, briefing_df)
+        briefing_df, inventory_df, design_dict, image_features, images_df = run_ingestion(config)
+        logger.info(f"  Raw data loaded in {time.time()-t0:.1f}s")
 
-    return linked_df, images_df
+        t0 = time.time()
+        design_flat_df = flatten_global_design(design_dict)
+        logger.info(f"  Design data flattened in {time.time()-t0:.1f}s")
+
+        t0 = time.time()
+        kpi_df = build_creative_kpi_table(
+            inventory_df,
+            min_impressions=config["features"]["min_impressions"],
+        )
+        logger.info(f"  KPI table built in {time.time()-t0:.1f}s")
+
+        linked_df = build_linked_dataset(kpi_df, design_flat_df, briefing_df)
+        return linked_df, images_df
 
 
-def stage_vision(images_df, config: dict, force: bool = False):
-    """Stage 2: Extract vision features from creative images."""
+def stage_vision(images_df, config: dict, force: bool = False, source: str = "db"):
+    """Stage 2: Extract vision features from creative images.
+
+    Parameters
+    ----------
+    source : str
+        'db'   — read pre-extracted features from staging.raw_vision_features
+        'file' — re-extract from .png files using ResNet50 (slow, ~minutes)
+    """
     logger.info("\n" + "-" * 50)
     logger.info("STAGE 2: VISION FEATURE EXTRACTION")
+    logger.info(f"  Source: {source.upper()}")
     logger.info("-" * 50)
 
-    from src.vision.extractor import run_vision_extraction
-
     t0 = time.time()
-    vision_df = run_vision_extraction(images_df, config, force_recompute=force)
-    logger.info(f"  Vision extraction completed in {time.time()-t0:.1f}s")
-    logger.info(f"  Vision features: {len(vision_df)} images, {vision_df.shape[1]} features")
 
+    if source == "db" and not force:
+        from src.ingestion.db_reader import read_vision_features_from_db
+        vision_df = read_vision_features_from_db()
+        logger.info(f"  Vision features read from DB in {time.time()-t0:.1f}s")
+    else:
+        from src.vision.extractor import run_vision_extraction
+        vision_df = run_vision_extraction(images_df, config, force_recompute=force)
+        logger.info(f"  Vision extraction completed in {time.time()-t0:.1f}s")
+
+    logger.info(f"  Vision features: {len(vision_df)} images, {vision_df.shape[1]} features")
     return vision_df
 
 
@@ -222,6 +256,13 @@ def main():
         action="store_true",
         help="Force recompute all stages (ignore cache)",
     )
+    parser.add_argument(
+        "--source",
+        type=str,
+        choices=["db", "file"],
+        default="db",
+        help="Data source: 'db' reads from analytics schema (default), 'file' reads raw CSVs",
+    )
     args = parser.parse_args()
 
     logger.info("\n" + "=" * 50)
@@ -231,11 +272,12 @@ def main():
     config = load_config(args.config)
     stage = args.stage
     force = args.force
+    source = args.source
 
     t_total = time.time()
 
     if stage in ("ingestion", "all"):
-        linked_df, images_df = stage_ingestion(config)
+        linked_df, images_df = stage_ingestion(config, source=source)
     else:
         import pandas as pd
         cache = Path(config["features"]["feature_cache_path"])
@@ -250,7 +292,7 @@ def main():
             sys.exit(1)
 
     if stage in ("vision", "all") and images_df is not None:
-        vision_df = stage_vision(images_df, config, force=force)
+        vision_df = stage_vision(images_df, config, force=force, source=source)
     else:
         import pandas as pd
         vision_cache = Path(config["vision"]["cache_path"])
