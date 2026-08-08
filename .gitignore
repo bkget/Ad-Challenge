@@ -6,6 +6,7 @@ data/global_design_data.json
 data/Creative Assets_.zip
 data/global_design_data.csv
 data/processed/*.parquet
+data/processed/*.pkl
 models/*.pkl
 
 # Results and charts (optional, keep json but ignore raw dumps if any)
