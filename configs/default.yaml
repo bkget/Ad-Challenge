@@ -1,0 +1,83 @@
+# Ad-Challenge Pipeline Configuration
+# All pipeline stages read from this single config file.
+
+pipeline:
+  random_seed: 42
+  data_dir: "data"
+  processed_dir: "data/processed"
+  results_dir: "results"
+  models_dir: "models"
+
+ingestion:
+  briefing_csv: "data/briefing.csv"
+  inventory_csv: "data/campaigns_inventory_updated.csv"
+  design_json: "data/global_design_data.json"
+  image_features_json: "data/image_features.json"
+  images_dir: "data/Creative Assets_"
+
+vision:
+  model: "resnet50"            # Options: resnet50, clip
+  embedding_dim: 2048          # ResNet50 avg pool output
+  pca_components: 32           # Reduce to 32 dims for tabular fusion
+  cache_path: "data/processed/vision_embeddings.parquet"
+  batch_size: 16
+  image_size: 224
+  # Handcrafted visual features
+  handcrafted:
+    color_saturation: true
+    brightness_mean: true
+    visual_entropy: true
+    aspect_ratio: true
+    color_diversity: true
+
+features:
+  target_er: "engagement_rate"
+  target_ctr: "click_through_rate"
+  min_impressions: 10          # Filter creatives with < 10 impressions
+  feature_cache_path: "data/processed/feature_dataset.parquet"
+  # Contextual tabular features to include
+  context_features:
+    - device_type
+    - platform_os
+    - geo_country
+    - has_video
+    - campaign_objective_enc
+    - placement_type
+    - buy_rate
+  # Campaign features from briefing
+  campaign_features:
+    - currency
+    - volume_agreed
+    - gross_cost
+
+modeling:
+  cv_strategy: "group_kfold"   # Prevents campaign-level leakage
+  n_splits: 5
+  group_col: "campaign_id"     # Group by campaign for cold-start eval
+  primary_target: "engagement_rate"
+  models:
+    - baseline
+    - tabular
+    - vision
+    - multimodal
+  lightgbm:
+    n_estimators: 300
+    learning_rate: 0.05
+    max_depth: 6
+    num_leaves: 31
+    min_child_samples: 10
+    subsample: 0.8
+    colsample_bytree: 0.8
+    reg_alpha: 0.1
+    reg_lambda: 0.1
+  ridge:
+    alpha: 1.0
+
+evaluation:
+  metrics:
+    - mae
+    - rmse
+    - r2
+    - mape
+  results_path: "results/benchmark_results.json"
+  feature_importance_path: "results/feature_importance.json"
