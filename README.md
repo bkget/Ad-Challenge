@@ -29,15 +29,47 @@ Our approach is **Multimodal**, meaning we combine *Contextual* (text/numbers) a
 
 ## 2. Overall Architecture Flow
 
-The system is built as a modern, decoupled 3-tier architecture:
+The system is built as a modern, decoupled 4-layer architecture:
 
-[![AdTech Architecture](screenshots/architecture.png)](screenshots/architecture.png)
+```mermaid
+flowchart TD
+    subgraph RAW["📂 Raw Data"]
+        A1["📋 briefing.csv\nCampaign budgets & dates"]
+        A2["📊 inventory.csv\n350k+ ad events"]
+        A3["🖼️ Creative Assets\n144 PNG images"]
+        A4["🗂️ global_design_data.json\nColors, labels, text"]
+    end
+
+    subgraph PIPELINE["⚙️ ML Pipeline  ·  src/pipeline/run_all.py"]
+        B1["Entity Resolution\nLink game_key → image"]
+        B2["Vision Extraction\nResNet50 + Heuristics"]
+        B3["Feature Engineering\nGroupKFold · PCA · LightGBM"]
+    end
+
+    subgraph STORE["🗄️ PostgreSQL Database"]
+        C1["Campaigns · Creatives\nMetrics · Benchmarks"]
+    end
+
+    subgraph API["🚀 FastAPI  ·  src/api/main.py"]
+        D1["/api/stats\n/api/benchmarks\n/api/predict"]
+    end
+
+    subgraph DASH["📱 Dashboard  ·  app/index.html"]
+        E1["Interactive KPI Cards\nCreative Simulator"]
+    end
+
+    A1 & A2 & A3 & A4 --> B1
+    B1 --> B2 --> B3
+    B3 -->|"feature_dataset.parquet\nbenchmark_results.json"| C1
+    C1 --> D1
+    D1 -->|"REST JSON"| E1
+```
 
 ### The Flow:
-1.  **Pipeline (`src/pipeline/run_all.py`):** Cleans the messy raw data, extracts deep-learning features from the ad images, builds a master dataset, and trains the Machine Learning models (saving results to local caches).
-2.  **Database Loader (`src/db/load.py`):** Parses those cached outputs and structures them cleanly into a relational PostgreSQL database.
-3.  **Backend API (`src/api/main.py`):** A web server that connects to the database and exposes endpoints (like `/api/stats` and `/api/benchmarks`) to serve data.
-4.  **Frontend Dashboard (`app/index.html`):** A visually stunning, glassmorphism UI that fetches data from the API and provides an interactive Creative Performance Simulator.
+1.  **Pipeline (`src/pipeline/run_all.py`):** Resolves messy entity links, extracts ResNet50 vision features, engineers all features, and trains LightGBM — saving results to `.parquet` and `.json` caches.
+2.  **Database Loader (`src/db/load.py`):** Reads those caches and loads them cleanly into a relational PostgreSQL database.
+3.  **Backend API (`src/api/main.py`):** Connects to the database and exposes `/api/stats`, `/api/benchmarks`, and `/api/predict` endpoints.
+4.  **Frontend Dashboard (`app/index.html`):** Fetches live data from the API and renders an interactive Creative Performance Simulator.
 
 ---
 
