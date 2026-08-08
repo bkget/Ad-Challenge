@@ -1,0 +1,44 @@
+# Git metadata
+.git/
+.gitignore
+.dvc/
+.dvcignore
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Jupyter notebooks (not needed in container)
+notebook/
+
+# Old Airflow components (replaced by src/pipeline/)
+dags/
+logs/
+plugins/
+
+# Dev tools
+.vscode/
+.idea/
+
+# Large data files (mounted as volumes instead)
+data/campaigns_inventory_updated.csv
+data/Creative Assets_/
+data/global_design_data.json
+
+# Docs (not needed in container)
+docs/
+screenshots/
+
+# Demo app (runs separately)
+app/
+
+# Virtual environments
+venv/
+.venv/
+env/

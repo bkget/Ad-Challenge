@@ -1,12 +1,25 @@
-# Data
+# Data and models
 data/Creative Assets_
 data/briefing.csv
 data/campaigns_inventory_updated.csv
 data/global_design_data.json
 data/Creative Assets_.zip
 data/global_design_data.csv
+data/processed/*.parquet
+models/*.pkl
+
+# Results and charts (optional, keep json but ignore raw dumps if any)
+# results/benchmark_results.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+.env
 
 # logs and checkpoints
 notebooks/.ipynb_checkpoints/
-dags/__pycache__/
 logs/*
+.pytest_cache/
