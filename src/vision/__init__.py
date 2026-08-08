@@ -1,0 +1,1 @@
+"""Vision feature extraction modules."""
