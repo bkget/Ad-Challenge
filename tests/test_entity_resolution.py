@@ -47,7 +47,7 @@ def sample_design_dict():
 def sample_inventory_df():
     return pd.DataFrame({
         "campaign_id": ["camp_01"] * 5 + ["camp_02"] * 3,
-        "game_key": ["game_key_001"] * 5 + ["game_key_002"] * 3,
+        "game_key": ["slug_1/req_aaa"] * 5 + ["slug_2/req_bbb"] * 3,
         "device_type": ["smartphone"] * 8,
         "platform_os": ["ios", "ios", "android", "ios", "android", "ios", "android", "ios"],
         "geo_country": ["USA"] * 8,
@@ -131,7 +131,7 @@ class TestBuildCreativeKpiTable:
         assert len(df_filtered) == 0
 
     def test_correct_er_calculation(self, sample_inventory_df):
-        """camp_01/game_key_001 rows should produce valid ER values in [0, 1].
+        """camp_01/slug_1/req_aaa rows should produce valid ER values in [0, 1].
         
         Note: grouping includes device_type+platform_os+geo_country, so
         impressions/engagements are split across sub-groups.
@@ -139,9 +139,9 @@ class TestBuildCreativeKpiTable:
         df = build_creative_kpi_table(sample_inventory_df, min_impressions=1)
         rows = df[
             (df["campaign_id"] == "camp_01") &
-            (df["game_key"] == "game_key_001")
+            (df["game_key"] == "slug_1/req_aaa")
         ]
-        assert len(rows) > 0, "Expected at least one row for camp_01/game_key_001"
+        assert len(rows) > 0, "Expected at least one row for camp_01 and slug_1/req_aaa"
         # All ER values for this creative should be in [0, 1]
         assert (rows["engagement_rate"] >= 0).all()
         assert (rows["engagement_rate"] <= 1).all()
