@@ -1,4 +1,4 @@
-# Ad-Challenge: Multimodal AdTech Creative Performance Prediction
+# AdTech Creative Performance Prediction
 [![CI Pipeline](https://github.com/bkget/Ad-Challenge/actions/workflows/ci.yml/badge.svg)](https://github.com/bkget/Ad-Challenge/actions/workflows/ci.yml)
 This project is an end-to-end Machine Learning and Data Engineering platform built to predict the performance of digital advertising creatives *before* they are launched. 
 
