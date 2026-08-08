@@ -8,6 +8,7 @@ data/global_design_data.csv
 data/processed/*.parquet
 data/processed/*.pkl
 models/*.pkl
+docs/*
 
 # Results and charts (optional, keep json but ignore raw dumps if any)
 # results/benchmark_results.json
