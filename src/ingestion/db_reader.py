@@ -4,7 +4,7 @@ Replaces file-based ingestion (CSV/JSON) by reading directly from the
 analytics and staging schemas. This makes the pipeline a proper consumer
 of the data warehouse instead of re-reading raw files.
 
-Pattern B: analytics schema → ML pipeline → model outputs → analytics schema
+Pattern: analytics schema → ML pipeline → model outputs → analytics schema
 """
 
 import logging
@@ -186,6 +186,15 @@ def read_images_registry_from_db() -> pd.DataFrame:
         return "unknown"
 
     df["placement_type"] = df["slug"].apply(_placement)
+
+    # Compute file_size_kb dynamically since it's not stored in the staging DB
+    import os
+    def _get_size(path):
+        if pd.isna(path) or not os.path.exists(path):
+            return 0.0
+        return round(os.path.getsize(path) / 1024, 2)
+        
+    df["file_size_kb"] = df["filepath"].apply(_get_size)
 
     logger.info(f"Asset registry from DB: {len(df)} images")
     return df
