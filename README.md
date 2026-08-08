@@ -6,9 +6,7 @@ It transforms raw campaign logs, tabular metadata, and actual image pixels (usin
 
 ---
 
-## 1. The Basics: Understanding Ad Analysis (For Starters)
-
-If you are new to AdTech (Advertising Technology), here is a simple breakdown of what this project actually does:
+## 1. The Basics: Understanding Ad Analysis
 
 ### The Problem
 When a brand (like Lexus or IHOP) runs a digital ad campaign, they spend thousands of dollars showing image ads to users on phones and computers. They want to know: **Which image will get the most clicks and engagement?** Normally, they have to spend money to test the ads live (A/B testing). 
